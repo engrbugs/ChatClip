@@ -1,0 +1,1 @@
+ChatClip: A clipboard manager that captures and stores clipboard data for your chat conversations.
