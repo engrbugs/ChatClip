@@ -2,27 +2,21 @@
 //
 
 #include <iostream>
-#include <iostream>
 #include <string>
 
-#include <iostream>
 #include <algorithm>
 #include <vector>
-#include <string>
 
-#include <iostream>
 #include <map>
 #include <optional>
-#include <vector>
 #include <thread>
 
-#include <thread>
 #include <mutex>
 
-std::mutex io_mutex;
-
+#include <Windows.h>
 
 using namespace std;
+
 
 const map<string, vector<string>> COMMANDS = {
     {"Cover Letter", {"cover", "c"}},
@@ -32,18 +26,68 @@ const map<string, vector<string>> COMMANDS = {
 const string VER = "0.6b";
 
 
-void output_thread()
+std::mutex io_mutex;
+HWND hWndNextViewer;
+
+LRESULT CALLBACK ClipboardViewerProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-    while (true)
-    {
-        lock_guard<mutex> lock(io_mutex);
-        cout << endl << "Output thread is running" << endl;
-        cout << "main: ";
-        this_thread::sleep_for(chrono::seconds(3)); // Delay for 3 second
+    switch (uMsg) {
+    case WM_CLIPBOARDUPDATE:
+        // Clipboard content has changed, do something here
+        std::cout << "Clipboard content has changed." << std::endl;
+        break;
+    case WM_CHANGECBCHAIN:
+        if ((HWND)wParam == hwnd) {
+            // This window is being removed from the chain
+            hWndNextViewer = (HWND)lParam;
+        }
+        else if (hWndNextViewer != NULL) {
+            // Forward the message to the next window in the chain
+            SendMessage(hWndNextViewer, uMsg, wParam, lParam);
+        }
+        break;
+    default:
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
+
+    return 0;
 }
 
 
+void output_thread()
+{
+    HWND hwnd = CreateWindowEx(0, L"STATIC", L"", 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, NULL, NULL);
+
+    if (hwnd == NULL) {
+        std::cerr << "Error creating message-only window." << std::endl;
+        return ;
+    }
+
+    if (!AddClipboardFormatListener(hwnd)) {
+        std::cerr << "Error registering clipboard viewer." << std::endl;
+        return ;
+    }
+
+    MSG msg;
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        if (msg.message == WM_CLIPBOARDUPDATE) {
+            // Clipboard content has changed, do something here
+            std::cout << endl << "Clipboard content has changed." << std::endl;
+            cout << "main: ";
+        }
+
+        if (msg.message == WM_DESTROY) {
+            // Unregister the clipboard viewer and destroy the window
+            RemoveClipboardFormatListener(hwnd);
+            DestroyWindow(hwnd);
+            break;
+        }
+
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+}
 
 int main()
 {
@@ -70,8 +114,12 @@ int main()
         it = find(triggers.begin(), triggers.end(), input_str);
     }
     // do something with it, e.g. print the matched string
-    
+
+    t.detach();
     delete& it;
+
+
+
     return 0;
 }
 
