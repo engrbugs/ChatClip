@@ -1,6 +1,6 @@
 #include <Windows.h>
 #include <iostream>
-#include "common.h"
+#include "Common.h"
 
 using namespace std;
 HWND hWndNextViewer;

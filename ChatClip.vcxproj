@@ -131,12 +131,15 @@
   <ItemGroup>
     <ClCompile Include="ChatClip.cpp" />
     <ClCompile Include="Clipboard.cpp" />
+    <ClCompile Include="FileIO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="common.h" />
+    <ClInclude Include="Common.h" />
+    <ClInclude Include="Constant.h" />
+    <ClInclude Include="Filenames.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

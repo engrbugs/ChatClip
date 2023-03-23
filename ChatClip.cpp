@@ -12,7 +12,8 @@
 #include <thread>
 
 #include <mutex>
-#include "common.h"
+#include "Common.h"
+#include "Filenames.h"
 
 
 using namespace std;
@@ -40,6 +41,7 @@ int main()
     std::atomic<bool> stop_output_thread(false);
     
     cout << "List of commands: " << VER << endl;
+    cout << ExePath() << endl;
 
     for (auto& x : COMMANDS) {
         cout << x.first << ": [" << x.second[1] << "]" << x.second[0] << endl;
