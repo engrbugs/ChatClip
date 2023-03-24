@@ -7,7 +7,6 @@ HWND hWndNextViewer;
 
 bool processed_clipboard_update = false; // Initialize flag to false
 
-
 string Get_clipboard_text() {
     string text = "";
     // Try opning the clipboard

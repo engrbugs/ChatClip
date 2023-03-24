@@ -42,6 +42,7 @@ int main()
     
     cout << "List of commands: " << VER << endl;
     cout << ExePath() << endl;
+    Read_ini_string();
 
     for (auto& x : COMMANDS) {
         cout << x.first << ": [" << x.second[1] << "]" << x.second[0] << endl;
