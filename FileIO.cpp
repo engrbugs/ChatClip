@@ -2,8 +2,14 @@
 #include <string>
 #include <iostream>
 #include "Common.h"
+#include <locale>
+
+#include <iostream>
+#include <cstring>
+
 
 using namespace std;
+
 
 string ExePath() {
     wchar_t buffer[MAX_PATH];
@@ -14,18 +20,39 @@ string ExePath() {
     return sbuffer.substr(0, pos);
 }
 
-int Read_ini_string() {
-    TCHAR iniPath[MAX_PATH] = TEXT("C:\\BUGS\\Github\\ChatClip\\x64\\Debug\\files.ini");
-    TCHAR sectionName[] = TEXT("Files");
-    TCHAR keyName[] = TEXT("a");
-    TCHAR defaultValue[] = TEXT("nnn");
+
+
+string Read_ini_string(const string iniPath, const string sectionName, const string keyName, const string defaultValue) {
+    char* myCharPtr = new char[iniPath.length() + 1];
+    strcpy_s(myCharPtr, iniPath.length() + 1, iniPath.c_str());
+
+    std::cout << myCharPtr << std::endl;
+
+    
+
+    size_t newsize = strlen(myCharPtr) + 1;
+    //delete[] myCharPtr;
+
+    wchar_t* wcstring = new wchar_t[newsize];
+
+    // Convert char* string to a wchar_t* string.
+    size_t convertedChars = 0;
+    mbstowcs_s(&convertedChars, wcstring, newsize, myCharPtr, _TRUNCATE);
+    // Display the result and indicate the type of string that it is.
+    wcout << wcstring << L" (wchar_t *)" << endl;
+    //delete[]wcstring;
+
+    //TCHAR _iniPath[MAX_PATH] = wcstring;
+    TCHAR _sectionName[] = TEXT("Files");
+    TCHAR _keyName[] = TEXT("a");
+    TCHAR _defaultValue[] = TEXT("nnn");
 
     TCHAR value[256];
-    DWORD size = GetPrivateProfileString(sectionName, keyName, defaultValue, value, sizeof(value), iniPath);
+    DWORD size = GetPrivateProfileString(_sectionName, _keyName, _defaultValue, value, sizeof(value), wcstring);
 
     if (size == 0) {
         // Error: failed to read value from INI file
-        std::cerr << "Failed to read value from INI file" << value << std::endl;
+        std::cerr << "Failed to INI file:" << "_iniPath" << std::endl;
         //return 1;
     }
     // Convert TCHAR string to char array
@@ -38,5 +65,5 @@ int Read_ini_string() {
     // Use the resulting std::string
     std::cout << "Value read from INI file: " << stringValue << std::endl;
 
-    return 0;
+    return "";
 }
