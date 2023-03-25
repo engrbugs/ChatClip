@@ -2,11 +2,11 @@
 #include <string>
 #include <iostream>
 #include "Common.h"
+#include "Filenames.h"
 #include <locale>
 
 #include <iostream>
 #include <cstring>
-
 
 using namespace std;
 
@@ -21,34 +21,44 @@ string ExePath() {
 }
 
 
+// Function that converts a string to a TCHAR*
+TCHAR* stringToTCHAR(const string str) {
 
-string Read_ini_string(const string iniPath, const string sectionName, const string keyName, const string defaultValue) {
-    char* myCharPtr = new char[iniPath.length() + 1];
-    strcpy_s(myCharPtr, iniPath.length() + 1, iniPath.c_str());
+    // Calculate the required size of the buffer
+    size_t size = str.size() + 1;
 
-    std::cout << myCharPtr << std::endl;
+    // Allocate memory for the TCHAR* buffer
+    TCHAR* buffer = new TCHAR[size];
 
-    
+    // Convert the input string to a TCHAR* string
+    // Using the mbstowcs_s function to handle multibyte strings
+    // nullptr is passed as the first argument to mbstowcs_s to indicate that we don't need to know how many characters were actually converted
+    // The buffer is passed as the second argument to store the converted string
+    // The size is passed as both the third and fourth arguments to indicate the size of both the input string and the output buffer
+    // str.c_str() is passed as the final argument to provide the input string
+    mbstowcs_s(nullptr, buffer, size, str.c_str(), size);
 
-    size_t newsize = strlen(myCharPtr) + 1;
-    //delete[] myCharPtr;
+    // Return the converted TCHAR* string
+    return buffer;
+}
 
-    wchar_t* wcstring = new wchar_t[newsize];
 
-    // Convert char* string to a wchar_t* string.
-    size_t convertedChars = 0;
-    mbstowcs_s(&convertedChars, wcstring, newsize, myCharPtr, _TRUNCATE);
-    // Display the result and indicate the type of string that it is.
-    wcout << wcstring << L" (wchar_t *)" << endl;
-    //delete[]wcstring;
 
-    //TCHAR _iniPath[MAX_PATH] = wcstring;
-    TCHAR _sectionName[] = TEXT("Files");
-    TCHAR _keyName[] = TEXT("a");
-    TCHAR _defaultValue[] = TEXT("nnn");
+string Read_ini_string(const string iniPath, const string sectionName, 
+    const string keyName, const string defaultValue) {
+
+    TCHAR* _iniPath = stringToTCHAR(iniPath);
+    TCHAR* _sectionName = stringToTCHAR(sectionName);
+    TCHAR* _keyName = stringToTCHAR(keyName);
+    TCHAR* _defaultValue = stringToTCHAR(defaultValue);
 
     TCHAR value[256];
-    DWORD size = GetPrivateProfileString(_sectionName, _keyName, _defaultValue, value, sizeof(value), wcstring);
+    DWORD size = GetPrivateProfileString(_sectionName, _keyName, _defaultValue, 
+        value, sizeof(value), _iniPath);
+    /*delete[] _iniPath;
+    delete[] _sectionName;
+    delete[] _keyName;
+    delete[] _defaultValue;*/
 
     if (size == 0) {
         // Error: failed to read value from INI file

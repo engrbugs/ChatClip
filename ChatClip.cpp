@@ -41,8 +41,7 @@ int main()
     std::atomic<bool> stop_output_thread(false);
     
     cout << "List of commands: " << VER << endl;
-    cout << FILES_TO_READ << endl;
-    Read_ini_string(FILES_TO_READ, "Files", "a", "");
+    Read_ini_string(ExePath() + FILES_TO_READ, "Files", "a", "");
 
     for (auto& x : COMMANDS) {
         cout << x.first << ": [" << x.second[1] << "]" << x.second[0] << endl;
