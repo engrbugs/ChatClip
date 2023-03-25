@@ -8,4 +8,6 @@ extern std::string glob;
 
 void Check_clipboard_update();
 
+
+
 #endif // COMMON_H
