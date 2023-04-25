@@ -37,3 +37,32 @@ string tcharToString(const TCHAR* tch)
     wcstombs_s(nullptr, charValue, tch, _TRUNCATE);
     return std::string(charValue);
 }
+
+
+
+string trim_Both_Ends(const string str)
+{
+    std::string output = str;
+    size_t first = output.find_first_not_of(' ');
+    size_t last = output.find_last_not_of(' ');
+    if (first != std::string::npos && last != std::string::npos) {
+        output = output.substr(first, last - first + 1);
+    }
+    else {
+        output.clear();
+    }
+    return output;
+}
+
+
+string remove_Comment_Section(const string str)
+{
+    string sub = "//";
+    size_t pos = str.find(sub);
+    if (pos != string::npos) {
+        return trim_Both_Ends(str.substr(0, pos));
+    }
+    else {
+        return trim_Both_Ends(str);
+    }
+}

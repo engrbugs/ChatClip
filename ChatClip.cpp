@@ -14,19 +14,10 @@
 
 #include "Common.h"
 #include "Filenames.h"
+#include "Constant.h"
 
 
 using namespace std;
-
-const map<string, vector<string>> COMMANDS = {
-    {"Cover Letter", {"cover", "c"}},
-    {"Exit", {"exit", "x"}},
-};
-
-const string VER = "0.6b";
-
-const string pRefix = "123";
-
 
 string glob;
 
@@ -37,11 +28,16 @@ void output_thread()
 
 int main()
 {
+    //initialize clipBoards
+    vector<string> clipBoards;
+    for (int i = 0; i <= STACK_OF_CLIPBOARDS; i++) {
+        clipBoards.push_back("");
+    }
     vector<string> triggers;
     std::atomic<bool> stop_output_thread(false);
     
     cout << "List of commands: " << VER << endl;
-    Read_ini_string(ExePath() + FILES_TO_READ, "Files", "a", "");
+    Read_ini_string(ExePath() + FILES_TO_READ, "Files", "1", "");
 
     for (auto& x : COMMANDS) {
         cout << x.first << ": [" << x.second[1] << "]" << x.second[0] << endl;

@@ -45,9 +45,9 @@ string Read_ini_string(const string iniPath, const string sectionName,
         return "";
     }
 
-    // Convert TCHAR string to std::string
+    // Convert TCHAR string to std::string 
     std::string stringValue = tcharToString(value);
-
+    stringValue = remove_Comment_Section(stringValue);
     // Use the resulting std::string
     std::cout << "Value read from INI file: " << stringValue << std::endl;
 
