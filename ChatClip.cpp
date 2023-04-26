@@ -37,7 +37,12 @@ int main()
     std::atomic<bool> stop_output_thread(false);
     
     cout << "List of commands: " << VER << endl;
-    Read_ini_string(ExePath() + FILES_TO_READ, "Files", "1", "");
+    for (int i = 1; i <= 9; ++i) {
+        string str = "";
+        str = Read_ini_string(ExePath() + FILES_TO_READ, "Files", to_string(i), "");
+        if (!str.empty()) read_Text_file(ExePath() + "\\" + str);
+    }
+
 
     for (auto& x : COMMANDS) {
         cout << x.first << ": [" << x.second[1] << "]" << x.second[0] << endl;

@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <cstring>
+#include <fstream>
 
 using namespace std;
 
@@ -41,7 +42,7 @@ string Read_ini_string(const string iniPath, const string sectionName,
 
     if (size == 0) {
         // Error: failed to read value from INI file
-        std::cerr << "Failed to read value from INI file: " << iniPath << std::endl;
+        //std::cerr << "Failed to read value from INI file: " << iniPath << std::endl;
         return "";
     }
 
@@ -52,4 +53,23 @@ string Read_ini_string(const string iniPath, const string sectionName,
     std::cout << "Value read from INI file: " << stringValue << std::endl;
 
     return stringValue;
+}
+
+string read_Text_file(string path)
+{
+    string output;
+    string line;
+    ifstream myfile(path);
+    if (myfile.is_open()) {
+        while (getline(myfile, line)) {
+            output += line;
+            if (!myfile.eof()) {
+                output += "\n";
+            }
+            cout << output;
+        }
+        myfile.close();
+    }
+    else cout << "Unable to open file";
+    return output;
 }
