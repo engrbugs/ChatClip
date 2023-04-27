@@ -57,8 +57,7 @@ string trim_Both_Ends(const string str)
 
 string remove_Comment_Section(const string str)
 {
-    string sub = "//";
-    size_t pos = str.find(sub);
+    size_t pos = str.find("//");
     if (pos != string::npos) {
         return trim_Both_Ends(str.substr(0, pos));
     }

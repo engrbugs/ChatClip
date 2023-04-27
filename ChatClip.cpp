@@ -19,7 +19,12 @@
 
 using namespace std;
 
-string glob;
+// global variables
+std::atomic<bool> stop_output_thread(false);
+int clipBoards_index = 0;
+vector<string> clipBoards;
+vector<string> prompt_Lines;
+vector<string> before_Locs;
 
 void output_thread()
 {
@@ -29,21 +34,36 @@ void output_thread()
 int main()
 {
     //initialize clipBoards
-    vector<string> clipBoards;
-    for (int i = 0; i <= STACK_OF_CLIPBOARDS; i++) {
-        clipBoards.push_back("");
-    }
-    vector<string> triggers;
-    std::atomic<bool> stop_output_thread(false);
+    //vector<string> clipBoards;
+    //for (int i = 0; i <= STACK_OF_CLIPBOARDS; i++) {
+    //    clipBoards.push_back("");
+    //}
+    // 
+    //clipboard monitoring thread boolean
+ 
+
+
     
     cout << "List of commands: " << VER << endl;
     for (int i = 1; i <= 9; ++i) {
         string str = "";
-        str = Read_ini_string(ExePath() + FILES_TO_READ, "Files", to_string(i), "");
-        if (!str.empty()) read_Text_file(ExePath() + "\\" + str);
+
+        // read for [Files] category 
+        str = read_ini_string(ExePath() + FILES_TO_READ, "Files", to_string(i), "");
+        if (!str.empty())
+        {
+            prompt_Lines.push_back(read_Text_file(ExePath() + "\\" + str));
+            clipBoards.push_back("");
+        }
+        // read for [Before] category 
+        str = read_ini_string(ExePath() + FILES_TO_READ, "Before", to_string(i), "");
+        if (!str.empty())
+        {
+            before_Locs.push_back(read_Text_file(ExePath() + "\\" + str));
+        }
     }
 
-
+    vector<string> triggers;
     for (auto& x : COMMANDS) {
         cout << x.first << ": [" << x.second[1] << "]" << x.second[0] << endl;
         triggers.push_back(x.second[0]);
@@ -51,6 +71,7 @@ int main()
     }
     string input_str;
     auto& it = *new vector<string>::iterator(triggers.end());
+
 
     std::thread t(output_thread);
     while (it == triggers.end()) {
@@ -62,8 +83,6 @@ int main()
         // process the input_str as needed
         it = find(triggers.begin(), triggers.end(), input_str);
     }
-    // do something with it, e.g. print the matched string
-    cout << pRefix << glob;
     // Stop the clipboard monitoring thread
     stop_output_thread = true;
 

@@ -6,7 +6,10 @@
 extern std::atomic<bool> stop_output_thread;
 using namespace std;
 
-extern string glob;
+extern int clipBoards_index;
+
+extern vector<string> prompt_Lines;
+extern vector<string> before_Locs;
 extern vector<string> clipBoards;
 
 void Check_clipboard_update();

@@ -23,7 +23,7 @@ string ExePath() {
 
 
 
-string Read_ini_string(const string iniPath, const string sectionName, 
+string read_ini_string(const string iniPath, const string sectionName, 
     const string keyName, const string defaultValue) {
 
     TCHAR* _iniPath = stringToTCHAR(iniPath);
@@ -66,7 +66,8 @@ string read_Text_file(string path)
             if (!myfile.eof()) {
                 output += "\n";
             }
-            cout << output;
+            clipBoards_index += 1;
+            cout << output << " " << clipBoards_index;
         }
         myfile.close();
     }
