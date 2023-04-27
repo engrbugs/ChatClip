@@ -1,5 +1,7 @@
 #include <Windows.h>
 #include <iostream>
+#include <string>
+
 #include "Common.h"
 
 using namespace std;
@@ -47,6 +49,22 @@ void Set_clipboard_text(string str) {
         CloseClipboard();
     }
 }
+void create_a_Prompt()
+{
+    string prompt = "";
+    int index_for_clipBoards = 0;
+    for (int i = 0; i <= prompt_Lines.size() - 1; i++)
+    {
+        bool exists = std::find(before_Locs.begin(), before_Locs.end(), i) != before_Locs.end();
+        if (exists)
+        {
+            prompt += clipBoards[index_for_clipBoards];
+            index_for_clipBoards += 1;
+        }
+        prompt += prompt_Lines[i];
+    }
+    Set_clipboard_text(prompt);
+}
 
 void Check_clipboard_update() {
     HWND hwnd = CreateWindowEx(0, L"STATIC", L"", 0, 0, 0, 0, 0, HWND_MESSAGE, NULL, NULL, NULL);
@@ -68,8 +86,17 @@ void Check_clipboard_update() {
             if (!processed_clipboard_update) {
                 // Clipboard content has changed, do something here
                 std::cout << endl << "Clipboard content has changed." << endl;
-                Get_clipboard_text();
-                Set_clipboard_text("LLLL\nLLLL");
+
+                // clipBoards_indes is zero-indexed.
+                clipBoards[clipBoards_index] = Get_clipboard_text();
+                if (clipBoards_index >= clipBoards.size() - 1)
+                    clipBoards_index = 0;
+                else
+                    clipBoards_index += 1;
+                // zero-indexed
+                
+                create_a_Prompt();
+                //Set_clipboard_text("LLLL\nLLLL");
                 cout << "main: ";
 
                 processed_clipboard_update = true; // Set flag to true
@@ -86,3 +113,6 @@ void Check_clipboard_update() {
     RemoveClipboardFormatListener(hwnd);
     DestroyWindow(hwnd);
 }
+
+// this will be dirty: this file is meant for clipboards commands only, for future usage.
+

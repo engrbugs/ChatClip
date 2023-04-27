@@ -21,10 +21,12 @@ using namespace std;
 
 // global variables
 std::atomic<bool> stop_output_thread(false);
+
+// clipBoards_indes is zero-indexed.
 int clipBoards_index = 0;
 vector<string> clipBoards;
 vector<string> prompt_Lines;
-vector<string> before_Locs;
+vector<int> before_Locs;
 
 void output_thread()
 {
@@ -53,13 +55,15 @@ int main()
         if (!str.empty())
         {
             prompt_Lines.push_back(read_Text_file(ExePath() + "\\" + str));
-            clipBoards.push_back("");
+
         }
         // read for [Before] category 
         str = read_ini_string(ExePath() + FILES_TO_READ, "Before", to_string(i), "");
         if (!str.empty())
         {
-            before_Locs.push_back(read_Text_file(ExePath() + "\\" + str));
+            //  minus 1 because i'm using zero-indexed but my ini file is in one-based
+            before_Locs.push_back(stoi(str)-1);
+            clipBoards.push_back("");
         }
     }
 

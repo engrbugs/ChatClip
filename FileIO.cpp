@@ -50,7 +50,7 @@ string read_ini_string(const string iniPath, const string sectionName,
     std::string stringValue = tcharToString(value);
     stringValue = remove_Comment_Section(stringValue);
     // Use the resulting std::string
-    std::cout << "Value read from INI file: " << stringValue << std::endl;
+    //std::cout << "Value read from INI file: " << stringValue << std::endl;
 
     return stringValue;
 }
@@ -66,8 +66,7 @@ string read_Text_file(string path)
             if (!myfile.eof()) {
                 output += "\n";
             }
-            clipBoards_index += 1;
-            cout << output << " " << clipBoards_index;
+            //cout << output << " " << clipBoards_index;
         }
         myfile.close();
     }
